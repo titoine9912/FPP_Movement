@@ -57,42 +57,28 @@ namespace Script
 				targetVelocity += Vector2.right * speed;
 				xMov = 1;
 			}
-			if (Input.GetKeyDown(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space) && isGrounded==true)
 			{
 				//targetVelocity += Vector2.up * speed * 3;
 				Jump();
 			}
 			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
-
-			/*if (targetVelocity.sqrMagnitude > 0)
-				rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
-			else
-				rgBody.velocity = Vector2.zero;*/
-				//rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime);
-				
-
-			/*
-			if (Input.GetKey(KeyCode.A))
-			{
-				//rgBody.MovePosition(new Vector3(rgBody.position.x - 1 * speed, rgBody.position.y));
-				//transform.Translate(speed * Time.deltaTime, 0f, 0f);
-				rgBody.velocity = new Vector2(-speed, 0);
-			}
-			if (Input.GetKey(KeyCode.D))
-			{
-				//rgBody.MovePosition(new Vector3(rgBody.position.x + 1 * speed, rgBody.position.y));
-				rgBody.velocity = new Vector2(speed, 0);
-			}
-			if (Input.GetKey(KeyCode.Space))
-			{
-				rgBody.AddForce(new Vector2(0, 1), ForceMode2D.Impulse);
-				//rgBody.velocity = new Vector2(0.0f);
-			}
-			if (Input.GetKey(KeyCode.None))
-			{
-				rgBody.velocity = new Vector2(0, 0);
-			}
-			*/
 		}
-	}
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if(collision.gameObject.tag=="Ground")
+            {
+                isGrounded = true;
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D collision)
+        {
+            if(collision.gameObject.tag=="Ground")
+            {
+                isGrounded = false;
+            }
+        }
+    }
 }
