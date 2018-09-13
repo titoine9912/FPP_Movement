@@ -58,7 +58,7 @@ namespace Script
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if(collision.gameObject.tag=="Ground" || collision.gameObject.tag=="Vertical_Ground")
+            if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Vertical_Ground"))
             {
                 isGrounded = true;
             }
@@ -66,7 +66,7 @@ namespace Script
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            if(collision.gameObject.tag=="Ground" || collision.gameObject.tag=="Vertical_Ground")
+            if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Vertical_Ground"))
             {
                 isGrounded = false;
             }
