@@ -7,9 +7,11 @@ namespace Script
 		private Rigidbody2D rgBody;
 		//private GameObject ground;
 		private float speed = 10f;
-		private bool isGrounded = true;
+		public bool isGrounded = true;
 		private float force = 5f;
 		private int xMov;
+
+		public LayerMask groundLayers;
 		
 		public void Start()
 		{
@@ -32,8 +34,7 @@ namespace Script
 
 		private void Jump()
 		{
-			//if (rgBody.IsTouching(ground.GetComponent<Collider2D>()))
-				rgBody.velocity = new Vector2(rgBody.velocity.x, 25);
+			rgBody.velocity = new Vector2(rgBody.velocity.x, 25);
 			//rgBody.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
 			//Vector2 dForce = (Vector2.up * this.force * 5) / Time.fixedDeltaTime;
 			//rgBody.AddForce(dForce);
@@ -46,6 +47,8 @@ namespace Script
 		{
 			var targetVelocity = Vector2.zero;
 			xMov = 0;
+			isGrounded = Physics2D.OverlapArea(new Vector2(rgBody.position.x - 0.5f, rgBody.position.y - 0.5f),
+				new Vector2(transform.position.x + 0.5f, rgBody.position.y + 0.5f), groundLayers);
 			
 			if (Input.GetKey(KeyCode.A))
 			{
@@ -57,7 +60,7 @@ namespace Script
 				targetVelocity += Vector2.right * speed;
 				xMov = 1;
 			}
-			if (Input.GetKeyDown(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
 			{
 				//targetVelocity += Vector2.up * speed * 3;
 				Jump();
