@@ -6,6 +6,7 @@ namespace Script
 	{
 		private Rigidbody2D rgBody;
 		private float speed = 5f;
+		private bool isGrounded = true;
 		
 		public void Start()
 		{
@@ -25,7 +26,7 @@ namespace Script
 		public void Update()
 		{
 			var targetVelocity = Vector2.zero;
-			var force = 0.5f;
+			var force = 5f;
 			
 			if (Input.GetKey(KeyCode.A))
 			{
@@ -37,13 +38,14 @@ namespace Script
 			}
 			if (Input.GetKey(KeyCode.Space))
 			{
-				targetVelocity += Vector2.up * speed * 10;
+				targetVelocity += Vector2.up * speed * 3;
 			}
+			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
 
-			if (targetVelocity.sqrMagnitude > 0)
+			/*if (targetVelocity.sqrMagnitude > 0)
 				rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
 			else
-				rgBody.velocity = Vector2.zero;
+				rgBody.velocity = Vector2.zero;*/
 				//rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime);
 				
 
