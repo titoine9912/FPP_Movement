@@ -6,8 +6,8 @@ namespace Script
 	{
 		private Rigidbody2D rgBody;
 		private float speed = 10f;
-		private bool isGrounded = true;
-        private bool isOnWall = true;
+		private bool isGrounded = false;
+        private bool isOnWall = false;
 		private float force = 5f;
 		
 		public void Start()
@@ -57,29 +57,34 @@ namespace Script
 				Jump();
 			}
 			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
+
+           // Debug.Log("Is Grounded : " + isGrounded);
+          //  Debug.Log("Is on wall : " + isOnWall);
 		}
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            isGrounded = false;
+            isOnWall = false;
+
             for(int i=0; i<collision.contactCount;i++)
             {
+                var contact = collision.contacts[i];
+
+                /*if (collision.contacts[i].normal.y > 0 && Mathf.Abs(collision.contacts[i].normal.x) > 0)
+                {
+                    isOnWall = true;
+                }*/
+
                 if (collision.contacts[i].normal.y > 0)
                 {
                     isGrounded = true;
-                    isOnWall = false;
                 }
                 else if (Mathf.Abs(collision.contacts[i].normal.x) > 0)
                 {
                     isOnWall = true;
-                    isGrounded = false;
-                }
-                else
-                {
-                    isGrounded = false;
-                    isOnWall = false;
                 }
             }
-        
         }
 
         private void OnCollisionExit2D(Collision2D collision)
