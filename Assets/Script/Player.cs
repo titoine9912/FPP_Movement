@@ -7,6 +7,7 @@ namespace Script
 		private Rigidbody2D rgBody;
 		private float speed = 10f;
 		private bool isGrounded = true;
+        private bool isOnWall = true;
 		private float force = 5f;
 		
 		public void Start()
@@ -48,7 +49,7 @@ namespace Script
 			{
 				targetVelocity += Vector2.right * speed;
 			}
-			if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
+			if (Input.GetKeyDown(KeyCode.Space) && (isGrounded == true || isOnWall==true))
 			{
 				//targetVelocity += Vector2.up * speed * 3;
 				Jump();
@@ -58,17 +59,34 @@ namespace Script
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Vertical_Ground"))
+            for(int i=0; i<collision.contactCount;i++)
             {
-                isGrounded = true;
+                if (collision.contacts[i].normal.y > 0)
+                {
+                    isGrounded = true;
+                    isOnWall = false;
+                }
+                else if (Mathf.Abs(collision.contacts[i].normal.x) > 0)
+                {
+                    isOnWall = true;
+                    isGrounded = false;
+                }
+                else
+                {
+                    isGrounded = false;
+                    isOnWall = false;
+                }
             }
+        
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Vertical_Ground"))
+            if (collision.contactCount<=0)
+            //if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Vertical_Ground"))
             {
                 isGrounded = false;
+                isOnWall = false;
             }
         }
     }
