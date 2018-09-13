@@ -5,12 +5,16 @@ namespace Script
 	public class Player : MonoBehaviour
 	{
 		private Rigidbody2D rgBody;
-		private float speed = 5f;
+		private float speed = 10f;
 		private bool isGrounded = true;
+		private float force = 5f;
+		private int xMov;
 		
 		public void Start()
 		{
 			rgBody = GetComponent<Rigidbody2D>();
+			Physics2D.gravity = new Vector3(0f,-40f,0f);
+			
 		}
 
 		public void FixedUpdate()
@@ -23,22 +27,36 @@ namespace Script
 			rgBody.AddForce(movement * speed);*/
 		}
 
+		private void Jump()
+		{
+			rgBody.velocity = new Vector2(rgBody.velocity.x, 25);
+			//rgBody.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+			//Vector2 dForce = (Vector2.up * this.force * 5) / Time.fixedDeltaTime;
+			//rgBody.AddForce(dForce);
+			
+			//var characterVelocity = new Vector2 (xMov * speed, rgBody.velocity.y); // where y is gravity
+            //rgBody.velocity = characterVelocity;
+		}
+
 		public void Update()
 		{
 			var targetVelocity = Vector2.zero;
-			var force = 5f;
+			xMov = 0;
 			
 			if (Input.GetKey(KeyCode.A))
 			{
 				targetVelocity += Vector2.left * speed;
+				xMov = -1;
 			}
 			if (Input.GetKey(KeyCode.D))
 			{
 				targetVelocity += Vector2.right * speed;
+				xMov = 1;
 			}
-			if (Input.GetKey(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space))
 			{
-				targetVelocity += Vector2.up * speed * 3;
+				//targetVelocity += Vector2.up * speed * 3;
+				Jump();
 			}
 			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
 
