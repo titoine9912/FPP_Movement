@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 223867524}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -336,10 +336,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6878282170c128e4abbc8dc5d7589529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGrounded: 0
-  groundLayers:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!61 &1600988048
 BoxCollider2D:
   m_ObjectHideFlags: 0
