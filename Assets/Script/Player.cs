@@ -48,7 +48,7 @@ namespace Script
 			{
 				targetVelocity += Vector2.right * speed;
 			}
-			if (Input.GetKeyDown(KeyCode.Space) && isGrounded==true)
+			if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
 			{
 				//targetVelocity += Vector2.up * speed * 3;
 				Jump();
@@ -58,7 +58,7 @@ namespace Script
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if(collision.gameObject.tag=="Ground")
+            if(collision.gameObject.CompareTag("Ground"))
             {
                 isGrounded = true;
             }
@@ -66,7 +66,7 @@ namespace Script
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            if(collision.gameObject.tag=="Ground")
+            if(collision.gameObject.CompareTag("Ground"))
             {
                 isGrounded = false;
             }
