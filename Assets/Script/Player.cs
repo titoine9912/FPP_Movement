@@ -13,6 +13,8 @@ namespace Script
 		{
 			rgBody = GetComponent<Rigidbody2D>();
 			Physics2D.gravity = new Vector3(0f,-40f,0f);
+
+			rgBody.freezeRotation = true;
 		}
 
 		public void FixedUpdate()
