@@ -5,18 +5,20 @@ namespace Script
 {
 	public class PlayerController:MonoBehaviour
 	{
-        float speed = 1.5f;
+        private float playerxValue;
+        private Rigidbody2D playerBody;
+        public float playerSpeed;
 
-        void Update()
+
+        private void Start()
         {
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                transform.position += Vector3.left * speed * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                transform.position += Vector3.right * speed * Time.deltaTime;
-            }
+            playerBody = GetComponent<Rigidbody2D>();
+            playerBody.velocity = new Vector2(playerSpeed, 0);
         }
-	}
+
+        private void Update()
+        {
+            
+        }
+    }
 }
