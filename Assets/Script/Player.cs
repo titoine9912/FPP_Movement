@@ -48,7 +48,7 @@ namespace Script
 			{
 				targetVelocity += Vector2.right * speed;
 			}
-			if (Input.GetKeyDown(KeyCode.Space) && isGrounded==true)
+			if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
 			{
 				//targetVelocity += Vector2.up * speed * 3;
 				Jump();
