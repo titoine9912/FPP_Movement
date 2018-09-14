@@ -10,6 +10,9 @@ namespace Script
         private bool isOnWall = false;
 		private float force = 5f;
 		
+		private int numberOfTouchedWall = 0;
+		private int numberOfTouchedGround = 0;
+		
 		public void Start()
 		{
 			rgBody = GetComponent<Rigidbody2D>();
@@ -51,50 +54,46 @@ namespace Script
 			{
 				targetVelocity += Vector2.right * speed;
 			}
-			if (Input.GetKeyDown(KeyCode.Space) && (isGrounded == true || isOnWall==true))
+			if (Input.GetKeyDown(KeyCode.Space) && (numberOfTouchedGround > 0 || numberOfTouchedWall > 0)) 
 			{
 				//targetVelocity += Vector2.up * speed * 3;
 				Jump();
 			}
 			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
-
-           // Debug.Log("Is Grounded : " + isGrounded);
-          //  Debug.Log("Is on wall : " + isOnWall);
 		}
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            isGrounded = false;
-            isOnWall = false;
-
             for(int i=0; i<collision.contactCount;i++)
             {
                 var contact = collision.contacts[i];
 
-                /*if (collision.contacts[i].normal.y > 0 && Mathf.Abs(collision.contacts[i].normal.x) > 0)
+                if (contact.normal.y > 0)
                 {
-                    isOnWall = true;
-                }*/
-
-                if (collision.contacts[i].normal.y > 0)
-                {
-                    isGrounded = true;
+	                numberOfTouchedGround++;
                 }
-                else if (Mathf.Abs(collision.contacts[i].normal.x) > 0)
+                else if (Mathf.Abs(contact.normal.x) > 0)
                 {
-                    isOnWall = true;
+	                numberOfTouchedWall++;
                 }
             }
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            if (collision.contactCount<=0)
-            //if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Vertical_Ground"))
-            {
-                isGrounded = false;
-                isOnWall = false;
-            }
+	        for (int i = 0; i < collision.contactCount; ++i)
+	        {
+		        var contact = collision.contacts[i];
+		        
+		        if (contact.normal.y < 0)
+		        {
+			        numberOfTouchedGround--;
+		        }
+		        else if (contact.normal.x > 1 || contact.normal.x < -1)
+		        {
+			        numberOfTouchedWall--;
+		        }
+	        }
         }
     }
 }
