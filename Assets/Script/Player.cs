@@ -95,10 +95,10 @@ namespace Script
 				ChangeSprite();
 			}
 			
-			Debug.Log("Grounds : " + numberOfTouchedGround);
-			Debug.Log("Walls : " + numberOfTouchedWall);
-            //Debug.Log("nbWall:" + numberOfTouchedWall);
-            //Debug.Log("nbFloor:" + numberOfTouchedGround);
+			//Debug.Log("Grounds : " + numberOfTouchedGround);
+			//Debug.Log("Walls : " + numberOfTouchedWall);
+            Debug.Log("nbWall:" + numberOfTouchedWall);
+            Debug.Log("nbFloor:" + numberOfTouchedGround);
 		}
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -107,17 +107,20 @@ namespace Script
             Vector3 direction = transform.position - closestPoint;
             //Debug.Log(closestPoint);
             //Debug.Log(collision.contacts[0]);
-            float produitScalaireY = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
-            float produitScalaireX = Mathf.Abs(Vector3.Dot(direction, Vector3.up));
-            if (produitScalaireY==0)
-            {
-                numberOfTouchedGround++;
-            }
-            else if (produitScalaireX==0)
+            float produitScalaireY = Mathf.Abs(Vector3.Dot(direction, Vector3.up));
+            float produitScalaireX = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
+
+            if (produitScalaireX > 0.8)
             {
                 numberOfTouchedWall++;
                 lastWallTouch = 0;
             }
+            else if (produitScalaireY>0.8)
+            {
+                numberOfTouchedGround++;
+            }
+           
+            Debug.DrawLine(transform.position, closestPoint, Color.red, 10 * 1000);
             /*
             var contact = collision.contacts[0];                    
             if (contact.normal.y > 0)
@@ -136,20 +139,22 @@ namespace Script
         {
             Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
             Vector3 direction = (closestPoint - transform.position).normalized;
-            float produitScalaireY = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
-            float produitScalaireX = Mathf.Abs(Vector3.Dot(direction, Vector3.up));
+            float produitScalaireY = Mathf.Abs(Vector3.Dot(direction, Vector3.up));
+            float produitScalaireX = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
 
             Debug.Log("produit Y:"+produitScalaireY);
             Debug.Log("produit X:"+produitScalaireX);
-		    if (produitScalaireY>=0 && produitScalaireY<1 )
+
+            if (produitScalaireX > 0.2)
+            {
+                numberOfTouchedWall--;
+                lastWallTouch = 0;
+            }
+            else if (produitScalaireY>0.2f)
 		    {
 			    numberOfTouchedGround--;
 		    }
-		    else if (produitScalaireX>=0 && produitScalaireX<1)
-		    {
-			    numberOfTouchedWall--;
-                lastWallTouch = 0;
-		    }
+		    
         }
 
 		private void ChangeSprite()
