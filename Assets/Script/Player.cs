@@ -9,6 +9,7 @@ namespace Script
 		private bool isGrounded = false;
         private bool isOnWall = false;
 		private float force = 5f;
+        private float lastWallTouch = 0;
 		
 		private int numberOfTouchedWall = 0;
 		private int numberOfTouchedGround = 0;
@@ -49,7 +50,17 @@ namespace Script
 
         private void WallJump()
         {
-            rgBody.velocity = new Vector2(-15, 25);
+            rgBody.velocity = new Vector2(15 * lastWallTouch, 25);
+
+            /*if (lastWallTouch<0)
+            {
+                rgBody.velocity = new Vector2(-15, 25);
+            }
+            else if(lastWallTouch>0)
+            {
+                rgBody.velocity = new Vector2(15, 25);
+            }*/
+           
         }
 
 		public void Update()
@@ -86,10 +97,28 @@ namespace Script
 			
 			Debug.Log("Grounds : " + numberOfTouchedGround);
 			Debug.Log("Walls : " + numberOfTouchedWall);
+            //Debug.Log("nbWall:" + numberOfTouchedWall);
+            //Debug.Log("nbFloor:" + numberOfTouchedGround);
 		}
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
+            Vector3 direction = transform.position - closestPoint;
+            //Debug.Log(closestPoint);
+            //Debug.Log(collision.contacts[0]);
+            float produitScalaireY = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
+            float produitScalaireX = Mathf.Abs(Vector3.Dot(direction, Vector3.up));
+            if (produitScalaireY==0)
+            {
+                numberOfTouchedGround++;
+            }
+            else if (produitScalaireX==0)
+            {
+                numberOfTouchedWall++;
+                lastWallTouch = 0;
+            }
+            /*
             var contact = collision.contacts[0];                    
             if (contact.normal.y > 0)
             {
@@ -98,51 +127,28 @@ namespace Script
             else if (Mathf.Abs(contact.normal.x) > 0)
             {
                 numberOfTouchedWall++;
-            } 
-	        
-	        //Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
-	        //Vector3 direction = closestPoint - transform.position;
-
-	        /*for (int i = 0; i < collision.contactCount; ++i)
-	        {
-		        var contact = collision.contacts[i];
-		        closestPoint = contact.point;
-		        direction = closestPoint - transform.position;
-
-		        if (closestPoint.x > 0)
-		        {
-			        numberOfTouchedGround++;
-		        }
-		        else if (Mathf.Abs(closestPoint.y) > 0)
-		        {
-			        numberOfTouchedWall++;
-		        }
-	        }*/
-	        /*if (direction.y >= 0)
-	        {
-		        numberOfTouchedGround++;
-	        }
-	        else if (Mathf.Abs(direction.x) <= 0)
-	        {
-		        numberOfTouchedWall++;
-	        }*/
+                lastWallTouch = contact.normal.x;
+            }
+            */
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
             Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
             Vector3 direction = (closestPoint - transform.position).normalized;
-	        float produitScalaire = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
-	        
-		    if (direction.y < 0 && produitScalaire < 1)
+            float produitScalaireY = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
+            float produitScalaireX = Mathf.Abs(Vector3.Dot(direction, Vector3.up));
+
+            Debug.Log("produit Y:"+produitScalaireY);
+            Debug.Log("produit X:"+produitScalaireX);
+		    if (produitScalaireY>=0 && produitScalaireY<1 )
 		    {
 			    numberOfTouchedGround--;
-                Debug.Log("touche pu plancher");
 		    }
-		    else if (Mathf.Abs(direction.x) > 0)
+		    else if (produitScalaireX>=0 && produitScalaireX<1)
 		    {
 			    numberOfTouchedWall--;
-                Debug.Log("touche pu le mur");
+                lastWallTouch = 0;
 		    }
         }
 
