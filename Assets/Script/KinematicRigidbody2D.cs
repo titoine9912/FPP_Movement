@@ -21,6 +21,10 @@ namespace Pixel2018
 
         [SerializeField] [Tooltip("Precision of the simulation. Don't make it lower than 0.01.")]
         private float deltaPrecision = 0.01f;
+        
+        public Sprite sprite1;
+        public Sprite sprite2;
+        private SpriteRenderer spriteRenderer;
 
 #if UNITY_EDITOR
         [Header("Debug")]
@@ -65,12 +69,18 @@ namespace Pixel2018
         private void Awake()
         {
             rigidbody = GetComponent<Rigidbody2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
 
             contactFilter.useTriggers = false;
             contactFilter.useLayerMask = true;
             preallocaRaycastHits = new RaycastHit2D[NbPreallocatedRaycastHit];
 
             IsGravityIgnored = false;
+            
+            if (spriteRenderer.sprite == null)
+            {
+                spriteRenderer.sprite = sprite1;
+            }
         }
 
         private void Update()
@@ -91,6 +101,11 @@ namespace Pixel2018
             }
 
             Velocity = newVelocity;
+            
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                ChangeSprite();
+            }
         }
 
         private void FixedUpdate()
@@ -208,6 +223,18 @@ namespace Pixel2018
             }
 
             rigidbody.position += deltaPosition.normalized * deltaMagnitude;
+        }
+        
+        private void ChangeSprite()
+        {
+            if (spriteRenderer.sprite == sprite1)
+            {
+                spriteRenderer.sprite = sprite2;
+            }
+            else
+            {
+                spriteRenderer.sprite = sprite1;
+            }
         }
     }
 }
