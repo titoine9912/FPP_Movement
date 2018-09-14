@@ -98,14 +98,43 @@ namespace Script
             else if (Mathf.Abs(contact.normal.x) > 0)
             {
                 numberOfTouchedWall++;
-            }          
+            } 
+	        
+	        //Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
+	        //Vector3 direction = closestPoint - transform.position;
+
+	        /*for (int i = 0; i < collision.contactCount; ++i)
+	        {
+		        var contact = collision.contacts[i];
+		        closestPoint = contact.point;
+		        direction = closestPoint - transform.position;
+
+		        if (closestPoint.x > 0)
+		        {
+			        numberOfTouchedGround++;
+		        }
+		        else if (Mathf.Abs(closestPoint.y) > 0)
+		        {
+			        numberOfTouchedWall++;
+		        }
+	        }*/
+	        /*if (direction.y >= 0)
+	        {
+		        numberOfTouchedGround++;
+	        }
+	        else if (Mathf.Abs(direction.x) <= 0)
+	        {
+		        numberOfTouchedWall++;
+	        }*/
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
             Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
-            Vector3 direction = closestPoint - transform.position;
-		    if (direction.y < 0 )
+            Vector3 direction = (closestPoint - transform.position).normalized;
+	        float produitScalaire = Mathf.Abs(Vector3.Dot(direction, Vector3.right));
+	        
+		    if (direction.y < 0 && produitScalaire < 1)
 		    {
 			    numberOfTouchedGround--;
                 Debug.Log("touche pu plancher");
