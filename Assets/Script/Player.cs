@@ -34,13 +34,12 @@ namespace Script
 		private void Jump()
 		{
 			rgBody.velocity = new Vector2(rgBody.velocity.x, 25);
-			//rgBody.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-			//Vector2 dForce = (Vector2.up * this.force * 5) / Time.fixedDeltaTime;
-			//rgBody.AddForce(dForce);
-			
-			//var characterVelocity = new Vector2 (xMov * speed, rgBody.velocity.y); // where y is gravity
-            //rgBody.velocity = characterVelocity;
 		}
+
+        private void WallJump()
+        {
+            rgBody.velocity = new Vector2(-15, 25);
+        }
 
 		public void Update()
 		{
@@ -56,44 +55,50 @@ namespace Script
 			}
 			if (Input.GetKeyDown(KeyCode.Space) && (numberOfTouchedGround > 0 || numberOfTouchedWall > 0)) 
 			{
+                if(numberOfTouchedGround>0 || (numberOfTouchedWall>0 && numberOfTouchedGround>0))
+                {
+                    Jump();
+                }
+                else if(numberOfTouchedWall>0)
+                {
+                    WallJump();
+                }
 				//targetVelocity += Vector2.up * speed * 3;
-				Jump();
+				
 			}
 			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
+
+            Debug.Log("nbWall:" + numberOfTouchedWall);
+            Debug.Log("nbFloor:" + numberOfTouchedGround);
 		}
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            for(int i=0; i<collision.contactCount;i++)
+            var contact = collision.contacts[0];                    
+            if (contact.normal.y > 0)
             {
-                var contact = collision.contacts[i];
-
-                if (contact.normal.y > 0)
-                {
-	                numberOfTouchedGround++;
-                }
-                else if (Mathf.Abs(contact.normal.x) > 0)
-                {
-	                numberOfTouchedWall++;
-                }
+                numberOfTouchedGround++;
             }
+            else if (Mathf.Abs(contact.normal.x) > 0)
+            {
+                numberOfTouchedWall++;
+            }          
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-	        for (int i = 0; i < collision.contactCount; ++i)
-	        {
-		        var contact = collision.contacts[i];
-		        
-		        if (contact.normal.y < 0)
-		        {
-			        numberOfTouchedGround--;
-		        }
-		        else if (contact.normal.x > 1 || contact.normal.x < -1)
-		        {
-			        numberOfTouchedWall--;
-		        }
-	        }
+            Vector3 closestPoint = collision.collider.bounds.ClosestPoint(transform.position);
+            Vector3 direction = closestPoint - transform.position;
+		    if (direction.y < 0 )
+		    {
+			    numberOfTouchedGround--;
+                Debug.Log("touche pu plancher");
+		    }
+		    else if (Mathf.Abs(direction.x) > 0)
+		    {
+			    numberOfTouchedWall--;
+                Debug.Log("touche pu le mur");
+		    }
         }
     }
 }
