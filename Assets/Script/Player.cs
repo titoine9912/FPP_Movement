@@ -12,13 +12,24 @@ namespace Script
 		
 		private int numberOfTouchedWall = 0;
 		private int numberOfTouchedGround = 0;
+
+		public Sprite sprite1;
+		public Sprite sprite2;
+		private SpriteRenderer spriteRenderer;
 		
 		public void Start()
 		{
 			rgBody = GetComponent<Rigidbody2D>();
+			spriteRenderer = GetComponent<SpriteRenderer>();
+			
 			Physics2D.gravity = new Vector3(0f,-40f,0f);
 
 			rgBody.freezeRotation = true;
+
+			if (spriteRenderer.sprite == null)
+			{
+				spriteRenderer.sprite = sprite1;
+			}
 		}
 
 		public void FixedUpdate()
@@ -60,6 +71,14 @@ namespace Script
 				Jump();
 			}
 			rgBody.velocity = Vector2.Lerp(rgBody.velocity, targetVelocity, Time.deltaTime * force);
+
+			if (Input.GetKeyDown(KeyCode.E))
+			{
+				ChangeSprite();
+			}
+			
+			Debug.Log("Grounds : " + numberOfTouchedGround);
+			Debug.Log("Walls : " + numberOfTouchedWall);
 		}
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -68,11 +87,11 @@ namespace Script
             {
                 var contact = collision.contacts[i];
 
-                if (contact.normal.y > 0)
+                if (contact.normal.y > 0 && numberOfTouchedGround == 0)
                 {
 	                numberOfTouchedGround++;
                 }
-                else if (Mathf.Abs(contact.normal.x) > 0)
+                else if (Mathf.Abs(contact.normal.x) > 0 && numberOfTouchedWall == 0)
                 {
 	                numberOfTouchedWall++;
                 }
@@ -89,11 +108,23 @@ namespace Script
 		        {
 			        numberOfTouchedGround--;
 		        }
-		        else if (contact.normal.x > 1 || contact.normal.x < -1)
+		        else if (Mathf.Abs(contact.normal.x) > 1)
 		        {
 			        numberOfTouchedWall--;
 		        }
 	        }
         }
+
+		private void ChangeSprite()
+		{
+			if (spriteRenderer.sprite == sprite1)
+			{
+				spriteRenderer.sprite = sprite2;
+			}
+			else
+			{
+				spriteRenderer.sprite = sprite1;
+			}
+		}
     }
 }
