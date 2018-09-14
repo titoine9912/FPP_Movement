@@ -315,7 +315,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1600988042}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.84, y: 10.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -372,7 +372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravity: {x: 0, y: -9.81}
   gravityMultiplier: 1
-  maxGroundSlopeAngleArctan: 0.35000002
+  maxGroundSlopeAngleArctan: 180
   sleepVelocity: 0.001
   deltaPrecision: 0.01
   showDebugInformation: 0
@@ -612,13 +612,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2096808448}
-  m_LocalRotation: {x: -0.04467967, y: 0.076054715, z: 0.7041547, w: 0.70454645}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 4.92, y: 2.85, z: -0.63}
   m_LocalScale: {x: 3.25, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: -9.792001, y: 2.5730002, z: 89.748}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!61 &2096808451
 BoxCollider2D:
   m_ObjectHideFlags: 0

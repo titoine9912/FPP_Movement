@@ -79,13 +79,13 @@ namespace Pixel2018
 
             if (Input.GetKey(KeyCode.A))
             {
-                newVelocity += Vector2.left;
+                newVelocity += Vector2.left*10;
             }
             if (Input.GetKey(KeyCode.D))
             {
-                newVelocity += Vector2.right;
+                newVelocity += Vector2.right*10;
             }
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
                 newVelocity += Vector2.up * 5;
             }
