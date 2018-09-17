@@ -29,6 +29,7 @@ namespace Pixel2018
         public Sprite sprite1;
         public Sprite sprite2;
         private SpriteRenderer spriteRenderer;
+        private bool facingRight = true;
 
 #if UNITY_EDITOR
         [Header("Debug")]
@@ -96,6 +97,17 @@ namespace Pixel2018
 
         private void Update()
         {
+            float horizontal = Input.GetAxis("Horizontal");
+
+            if (horizontal < 0 && !facingRight)
+            {
+                ReverseSprite();
+            }
+            else if (horizontal > 0 && facingRight)
+            {
+                ReverseSprite();
+            }
+            
             var newVelocity = Vector2.zero;
 
             if (Input.GetKey(KeyCode.A))
@@ -264,6 +276,15 @@ namespace Pixel2018
             {
                 spriteRenderer.sprite = sprite1;
             }
+        }
+
+        private void ReverseSprite()
+        {
+            facingRight = !facingRight;
+
+            Vector2 theScale = rigidbody.transform.localScale;
+            theScale.x *= -1;
+            rigidbody.transform.localScale = theScale;
         }
     }
 }
