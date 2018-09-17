@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Script
 {
@@ -39,6 +40,11 @@ namespace Script
         public Sprite sprite2;
         private SpriteRenderer spriteRenderer;
         private bool facingRight = true;
+
+        //private Animator animator;
+        private float maxSize = 1;
+        private float growFactor = 0.5f;
+        private float waitTime = 1;
 
 #if UNITY_EDITOR
         [Header("Debug")]
@@ -91,6 +97,8 @@ namespace Script
             rigidbody = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
 
+            //animator = GetComponent<Animator>();
+
             contactFilter.useTriggers = false;
             contactFilter.useLayerMask = true;
             preallocaRaycastHits = new RaycastHit2D[NbPreallocatedRaycastHit];
@@ -142,6 +150,7 @@ namespace Script
 
             if (Input.GetKeyDown(KeyCode.E))
             {
+                //animator.SetBool("isChangingSprite", true);
                 ChangeSprite();
             }
         }
@@ -306,6 +315,8 @@ namespace Script
 
         private void ChangeSprite()
         {
+            //StartCoroutine(ScaleChangingSprite());
+            
             if (spriteRenderer.sprite == sprite1)
             {
                 spriteRenderer.sprite = sprite2;
@@ -324,5 +335,33 @@ namespace Script
             theScale.x *= -1;
             rigidbody.transform.localScale = theScale;
         }
+
+        /*private IEnumerator ScaleChangingSprite()
+        {
+            float timer = 0;
+
+            while (true) //while en vie
+            {
+                while (maxSize > rigidbody.transform.localScale.x)
+                {
+                    timer += Time.deltaTime;
+                    rigidbody.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime * growFactor;
+                    yield return null;
+                }
+
+                yield return new WaitForSeconds(waitTime);
+
+                timer = 0;
+                while (1 < rigidbody.transform.localScale.x)
+                {
+                    timer += Time.deltaTime;
+                    rigidbody.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime * growFactor;
+                    yield return null;
+                }
+
+                timer = 0;
+                yield return new WaitForSeconds(waitTime);
+            }
+        }*/
     }
 }
