@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Script
 {
@@ -26,7 +27,7 @@ namespace Script
 			}
 
 			spriteRenderer.transform.position = position;
-			spriteRenderer.transform.localScale = new Vector2(0.5f, 0.5f);
+			NormalScale();
 		}
 
 		public void Update()
@@ -35,7 +36,7 @@ namespace Script
 			ChangeSprite();
 		}
 
-		public void ChangeSprite()
+		private void ChangeSprite()
 		{
 			if (player.GetComponent<SpriteRenderer>().sprite == sprite1)
 			{
@@ -45,15 +46,26 @@ namespace Script
 			{
 				spriteRenderer.sprite = sprite1;
 			}
-			
-			/*if (spriteRenderer.sprite == sprite2)
-			{
-				spriteRenderer.sprite = sprite1;
-			}
-			else
-			{
-				spriteRenderer.sprite = sprite2;
-			}*/
+
+			StartCoroutine(ChangeSpriteCoroutine());
+		}
+
+		private IEnumerator ChangeSpriteCoroutine()
+		{
+			ScaleSprite();
+			yield return new WaitForSeconds(Player.speed);
+			NormalScale();
+		}
+
+		private void ScaleSprite()
+		{
+			spriteRenderer.transform.position = player.transform.position;
+			spriteRenderer.transform.localScale = player.transform.localScale;
+		}
+
+		private void NormalScale()
+		{
+			spriteRenderer.transform.localScale = new Vector2(0.5f, 0.5f);
 		}
 	}
 }
