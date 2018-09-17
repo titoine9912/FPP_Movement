@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Pixel2018
+namespace Script
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class KinematicRigidbody2D : MonoBehaviour
@@ -52,7 +52,6 @@ namespace Pixel2018
         [Tooltip("Show debug informatio like velocity, ground normal and ground movement vector.")]
         private bool showDebugInformation;
 #endif
-        //
         private Vector2 velocity;
         private Vector2 targetVelocity;
         private Vector2 latestVelocity;
