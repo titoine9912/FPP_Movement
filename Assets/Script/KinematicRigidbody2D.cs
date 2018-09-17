@@ -337,9 +337,13 @@ namespace Pixel2018
             rigidbody.transform.localScale = theScale;
         }
 
-        /*private IEnumerator ScaleChangingSprite()
+        private IEnumerator ScaleChangingSprite()
         {
-            float timer = 0;
+            Vector3 myScale = rigidbody.transform.localScale;
+            myScale *= -0.5f;
+            rigidbody.transform.localScale = myScale;
+
+            /*float timer = 0;
 
             while (true) //while en vie
             {
@@ -362,7 +366,7 @@ namespace Pixel2018
 
                 timer = 0;
                 yield return new WaitForSeconds(waitTime);
-            }
-        }*/
+            }*/
+        }
     }
 }
