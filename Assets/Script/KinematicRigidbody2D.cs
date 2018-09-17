@@ -34,7 +34,7 @@ namespace Pixel2018
         [SerializeField] private Vector2 wallJumpVector = new Vector2(-0.02f, 5);
         [SerializeField] private Vector2 leftMove = new Vector2(-0.2f, 0);
         [SerializeField] private Vector2 rightMove = new Vector2(0.2f, 0);
-        [SerializeField] private float AngularDrag = 2f;
+        [SerializeField] private float AngularDrag = 0.1f;
 
         public Sprite sprite1;
         public Sprite sprite2;
@@ -316,6 +316,8 @@ namespace Pixel2018
 
         private void ChangeSprite()
         {
+            //StartCoroutine(ScaleChangingSprite());
+            
             if (spriteRenderer.sprite == sprite1)
             {
                 spriteRenderer.sprite = sprite2;
@@ -335,7 +337,7 @@ namespace Pixel2018
             rigidbody.transform.localScale = theScale;
         }
 
-        private IEnumerator ScaleChangingSprite()
+        /*private IEnumerator ScaleChangingSprite()
         {
             float timer = 0;
 
@@ -361,6 +363,6 @@ namespace Pixel2018
                 timer = 0;
                 yield return new WaitForSeconds(waitTime);
             }
-        }
+        }*/
     }
 }
