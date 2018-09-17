@@ -16,11 +16,15 @@ namespace Pixel2018
         [SerializeField] [Tooltip("Arctan value of the maximum slope angle considered as ground.")]
         private float maxGroundSlopeAngleArctan = 1 - 0.65f; //About 33°.
 
+        [SerializeField] private float maxWallSlopeAngleArctan = 1 - 0.65f;
+
         [SerializeField] [Tooltip("Simulation is ignored when velocity is bellow this threshold.")]
         private float sleepVelocity = 0.001f;
 
         [SerializeField] [Tooltip("Precision of the simulation. Don't make it lower than 0.01.")]
         private float deltaPrecision = 0.01f;
+
+        [SerializeField] private Vector2 wallJumpVector = new Vector2(-50, 10);
         
         public Sprite sprite1;
         public Sprite sprite2;
@@ -37,6 +41,8 @@ namespace Pixel2018
         private Vector2 targetVelocity;
         private Vector2 latestVelocity;
         private bool isGrounded;
+        private bool isOnWall;
+        private float direction=0;
         private float lastGroundedTime;
         private Vector2 groundNormal; //Vector perpenticular to current ground surface.
 
@@ -59,6 +65,11 @@ namespace Pixel2018
         public bool IsGrounded
         {
             get { return isGrounded; }
+        }
+
+        public bool IsOnWall
+        {
+            get { return isOnWall; }
         }
 
         public float TimeSinceAirborne
@@ -89,15 +100,19 @@ namespace Pixel2018
 
             if (Input.GetKey(KeyCode.A))
             {
-                newVelocity += Vector2.left*10;
+                newVelocity += Vector2.left*5;
             }
             if (Input.GetKey(KeyCode.D))
             {
-                newVelocity += Vector2.right*10;
+                newVelocity += Vector2.right*5;
             }
             if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
-                newVelocity += Vector2.up * 5;
+                newVelocity += Vector2.up * 5;      
+            }
+            if(Input.GetKey(KeyCode.Space) && isOnWall)
+            {
+                newVelocity += new Vector2(direction * wallJumpVector.x, wallJumpVector.y);                
             }
 
             Velocity = newVelocity;
@@ -136,7 +151,7 @@ namespace Pixel2018
         private void ResetValuesBeforeSimulation()
         {
             isGrounded = false;
-
+            isOnWall = false;
             contactFilter.layerMask = Physics2D.GetLayerCollisionMask(rigidbody.gameObject.layer);
         }
 
@@ -202,6 +217,20 @@ namespace Pixel2018
                             }
 #endif
                         }
+                    }
+                    else if(Mathf.Abs(colliderNormal.x)>1-maxWallSlopeAngleArctan)
+                    {
+                        if(colliderNormal.x<0)
+                        {
+                            direction = 1;
+                        }
+                        else if(colliderNormal.x>0)
+                        {
+                            direction = -1;
+                        }
+                        isOnWall = true;
+                        Debug.Log("direction"+direction);
+                        Debug.Log("directionX:" + wallJumpVector.x);
                     }
 
                     //How much this collider should affect the velocity. The more the velocity vector
