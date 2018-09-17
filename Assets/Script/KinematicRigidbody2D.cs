@@ -37,7 +37,7 @@ namespace Pixel2018
         [Tooltip("Show debug informatio like velocity, ground normal and ground movement vector.")]
         private bool showDebugInformation;
 #endif
-
+        //
         private Vector2 velocity;
         private Vector2 targetVelocity;
         private Vector2 latestVelocity;
