@@ -780,10 +780,10 @@ MonoBehaviour:
   maxWallSlopeAngleArctan: 0.35
   sleepVelocity: 0.001
   deltaPrecision: 0.01
-  wallJumpVector: {x: -1, y: 8}
-  leftMove: {x: -0.2, y: 0}
-  rightMove: {x: 0.2, y: 0}
-  AngularDrag: 0.1
+  wallJumpVector: {x: -2.5, y: 8}
+  leftMove: {x: -1, y: 0}
+  rightMove: {x: 1, y: 0}
+  AngularDrag: 0.5
   sprite1: {fileID: 21300000, guid: a784cec52c556b54eae3e81c2220c7ef, type: 3}
   sprite2: {fileID: 21300000, guid: dd4a157327744464b88ede85f3e87244, type: 3}
   showDebugInformation: 0

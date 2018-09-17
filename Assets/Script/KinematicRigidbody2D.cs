@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pixel2018
+namespace Script
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class KinematicRigidbody2D : MonoBehaviour
@@ -33,7 +33,7 @@ namespace Pixel2018
         [SerializeField] private Vector2 wallJumpVector = new Vector2(-0.02f, 5);
         [SerializeField] private Vector2 leftMove = new Vector2(-0.2f, 0);
         [SerializeField] private Vector2 rightMove = new Vector2(0.2f, 0);
-        [SerializeField] private float AngularDrag = 2f;
+        [SerializeField] private float AngularDrag = 0.1f;
 
         public Sprite sprite1;
         public Sprite sprite2;
@@ -46,7 +46,6 @@ namespace Pixel2018
         [Tooltip("Show debug informatio like velocity, ground normal and ground movement vector.")]
         private bool showDebugInformation;
 #endif
-        //
         private Vector2 velocity;
         private Vector2 targetVelocity;
         private Vector2 latestVelocity;
