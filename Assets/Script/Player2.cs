@@ -47,10 +47,10 @@ namespace Script
 				spriteRenderer.sprite = sprite1;
 			}
 
-			StartCoroutine(ChangeSpriteCoroutine());
+			//StartCoroutine(ChangeSpriteCoroutine());
 		}
 
-		private IEnumerator ChangeSpriteCoroutine()
+		/*private IEnumerator ChangeSpriteCoroutine()
 		{
 			ScaleSprite();
 			yield return new WaitForSeconds(Player.speed);
@@ -61,7 +61,7 @@ namespace Script
 		{
 			spriteRenderer.transform.position = player.transform.position;
 			spriteRenderer.transform.localScale = player.transform.localScale;
-		}
+		}*/
 
 		private void NormalScale()
 		{
