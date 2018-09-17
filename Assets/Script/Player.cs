@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Script
 {
 	public class Player : MonoBehaviour
 	{
 		private Rigidbody2D rgBody;
-		private float speed = 10f;
+		public static float speed = 10f;
 		private bool isGrounded = false;
         private bool isOnWall = false;
 		private float force = 5f;
@@ -168,5 +169,7 @@ namespace Script
 				spriteRenderer.sprite = sprite1;
 			}
 		}
+		
+		
     }
 }
