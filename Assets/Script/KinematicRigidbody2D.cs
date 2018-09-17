@@ -8,25 +8,34 @@ namespace Pixel2018
     {
         private const int NbPreallocatedRaycastHit = 16;
 
-        [Header("Physics")] [SerializeField] [Tooltip("Gravity force.")]
+        [Header("Physics")]
+        [SerializeField]
+        [Tooltip("Gravity force.")]
         private Vector2 gravity = new Vector2(0, -9.81f);
-        
-        [SerializeField] [Tooltip("How much gravity affects this object.")]
+
+        [SerializeField]
+        [Tooltip("How much gravity affects this object.")]
         private float gravityMultiplier = 1f;
 
-        [SerializeField] [Tooltip("Arctan value of the maximum slope angle considered as ground.")]
+        [SerializeField]
+        [Tooltip("Arctan value of the maximum slope angle considered as ground.")]
         private float maxGroundSlopeAngleArctan = 1 - 0.65f; //About 33°.
 
         [SerializeField] private float maxWallSlopeAngleArctan = 1 - 0.65f;
 
-        [SerializeField] [Tooltip("Simulation is ignored when velocity is bellow this threshold.")]
+        [SerializeField]
+        [Tooltip("Simulation is ignored when velocity is bellow this threshold.")]
         private float sleepVelocity = 0.001f;
 
-        [SerializeField] [Tooltip("Precision of the simulation. Don't make it lower than 0.01.")]
+        [SerializeField]
+        [Tooltip("Precision of the simulation. Don't make it lower than 0.01.")]
         private float deltaPrecision = 0.01f;
 
-        [SerializeField] private Vector2 wallJumpVector = new Vector2(-50, 10);
-        
+        [SerializeField] private Vector2 wallJumpVector = new Vector2(-0.02f, 5);
+        [SerializeField] private Vector2 leftMove = new Vector2(-0.2f, 0);
+        [SerializeField] private Vector2 rightMove = new Vector2(0.2f, 0);
+        [SerializeField] private float AngularDrag = 2f;
+
         public Sprite sprite1;
         public Sprite sprite2;
         private SpriteRenderer spriteRenderer;
@@ -49,7 +58,7 @@ namespace Pixel2018
         private Vector2 latestVelocity;
         private bool isGrounded;
         private bool isOnWall;
-        private float direction=0;
+        private float direction = 0;
         private float lastGroundedTime;
         private Vector2 groundNormal; //Vector perpenticular to current ground surface.
 
@@ -96,7 +105,7 @@ namespace Pixel2018
             preallocaRaycastHits = new RaycastHit2D[NbPreallocatedRaycastHit];
 
             IsGravityIgnored = false;
-            
+
             if (spriteRenderer.sprite == null)
             {
                 spriteRenderer.sprite = sprite1;
@@ -115,28 +124,31 @@ namespace Pixel2018
             {
                 ReverseSprite();
             }
-            
+
             var newVelocity = Vector2.zero;
 
             if (Input.GetKey(KeyCode.A))
             {
-                newVelocity += Vector2.left*5;
+                newVelocity += leftMove;
             }
             if (Input.GetKey(KeyCode.D))
             {
-                newVelocity += Vector2.right*5;
+                newVelocity += rightMove;
             }
-            if (Input.GetKey(KeyCode.Space) && isGrounded)
+            if (Input.GetKey(KeyCode.Space))
             {
-                newVelocity += Vector2.up * 5;      
-            }
-            if(Input.GetKey(KeyCode.Space) && isOnWall)
-            {
-                newVelocity += new Vector2(direction * wallJumpVector.x, wallJumpVector.y);                
+                if(isGrounded || isGrounded && isOnWall)
+                {
+                    newVelocity += Vector2.up * 5;
+                }
+                else if(isOnWall && isGrounded==false)
+                {
+                    newVelocity += new Vector2(direction * wallJumpVector.x, wallJumpVector.y);
+                }
             }
 
             Velocity = newVelocity;
-            
+
             if (Input.GetKeyDown(KeyCode.E))
             {
                 //animator.SetBool("isChangingSprite", true);
@@ -158,6 +170,9 @@ namespace Pixel2018
 
             ApplyDeltaPosition(horizontalDeltaPosition, false);
             ApplyDeltaPosition(verticalDeltaPosition, true);
+
+            CheckWallCollison(Vector2.left);
+            CheckWallCollison(Vector2.right);
 
             latestVelocity = velocity;
 
@@ -184,7 +199,16 @@ namespace Pixel2018
         private void AddTargetVelocityToVelocity()
         {
             //X velocity is entirely controlled by the object (like the player or an ennemy)
-            velocity.x = targetVelocity.x;
+            velocity.x += targetVelocity.x;
+
+            if(velocity.x>0)
+            {
+                velocity.x -= AngularDrag;
+            }
+            if(velocity.x<0)
+            {
+                velocity.x += AngularDrag;
+            }
             //Y velocity is controlled by the object when it's target y velocity is greater than 0 or if gravity is ignored.
             //Otherwise, current velocity is used.
             velocity.y = targetVelocity.y > 0 || IsGravityIgnored ? targetVelocity.y : velocity.y;
@@ -239,20 +263,6 @@ namespace Pixel2018
 #endif
                         }
                     }
-                    else if(Mathf.Abs(colliderNormal.x)>1-maxWallSlopeAngleArctan)
-                    {
-                        if(colliderNormal.x<0)
-                        {
-                            direction = 1;
-                        }
-                        else if(colliderNormal.x>0)
-                        {
-                            direction = -1;
-                        }
-                        isOnWall = true;
-                        Debug.Log("direction"+direction);
-                        Debug.Log("directionX:" + wallJumpVector.x);
-                    }
 
                     //How much this collider should affect the velocity. The more the velocity vector
                     //and the collider normal vector are opposed, the more the collider should absorb the velocity
@@ -274,7 +284,36 @@ namespace Pixel2018
 
             rigidbody.position += deltaPosition.normalized * deltaMagnitude;
         }
-        
+
+        private void CheckWallCollison(Vector2 deltaPosition)
+        {
+            var nbCollidersDetected = rigidbody.Cast(deltaPosition,
+                                                     contactFilter,
+                                                     preallocaRaycastHits,
+                                                     deltaPosition.magnitude);
+
+            for (int i = 0; i < nbCollidersDetected; i++)
+            {
+                var collider = preallocaRaycastHits[i];
+                var colliderNormal = collider.normal;
+
+                if (Mathf.Abs(colliderNormal.x) > 1 - maxWallSlopeAngleArctan)
+                {
+                    if (colliderNormal.x < 0)
+                    {
+                        direction = 1;
+                    }
+                    else if (colliderNormal.x > 0)
+                    {
+                        direction = -1;
+                    }
+                    isOnWall = true;
+                    Debug.Log("direction" + direction);
+                    Debug.Log("directionX:" + wallJumpVector.x);
+                }
+            }
+        }
+
         private void ChangeSprite()
         {
             if (spriteRenderer.sprite == sprite1)
